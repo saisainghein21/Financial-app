@@ -1,23 +1,26 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../components/my_button.dart';
-import '../components/my_textfield.dart';
 
-class LoginPage extends StatefulWidget {
+import '../views/my_button.dart';
+import '../views/my_textfield.dart';
+
+
+class RegisterPage extends StatefulWidget {
   final Function()? onTap;
-  const LoginPage({super.key, superkey, required this.onTap});
+  const RegisterPage({super.key, superkey, required this.onTap});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   // text editing controllers
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
-  // sign user in method
-  void signUserIn() async {
+  // sign user up method
+  void signUserUp() async {
     //show loading circle
     showDialog(
       context: context,
@@ -28,11 +31,17 @@ class _LoginPageState extends State<LoginPage> {
       },
     );
 
-    //try sign in
+    //try creating the user
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailController.text,
-          password: passwordController.text);
+      //check if password is confirmed
+      if(passwordController.text == confirmPasswordController.text){
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: emailController.text,
+            password: passwordController.text);
+      } else{
+        // show error message, password don't match
+        showErrorMessage("Password don't match!");
+      }
       //pop the loading circle
       Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
@@ -113,49 +122,48 @@ class _LoginPageState extends State<LoginPage> {
                   obscureText: true,
                 ),
 
+                const SizedBox(height: 10),
+
+                // confirm password textfield
+                MyTextField(
+                  controller: confirmPasswordController,
+                  hintText: 'Confirm Password',
+                  obscureText: true,
+                ),
 
 
                 const SizedBox(height: 25),
 
                 // sign in button
                 MyButton(
-                  text: "Sign In",
-                  onTap: signUserIn,
+                  text: "Sign Up",
+                  onTap: signUserUp,
                 ),
-
 
                 const SizedBox(height: 50),
 
-                // not a member? register now
+                // Already have an account?? Login now
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Not a member?',
-                          style: TextStyle(color: Colors.grey.shade400),
+                    Text(
+                      'Already have an account?',
+                      style: TextStyle(color: Colors.grey.shade400),
+                    ),
+                    const SizedBox(width: 10),
+                    GestureDetector(
+                      onTap: widget.onTap,
+                      child: const Text(
+                        'Login now',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline,
+                          decorationColor: Colors.green,
+                          decorationThickness: 2.0,
                         ),
-                        const SizedBox(width: 10),
-                        GestureDetector(
-                          onTap: widget.onTap,
-                          child: RichText(
-                            text: const TextSpan(
-                              text: 'Register now',
-                              style: TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.underline,
-                                decorationColor: Color(0xFFC201F2),
-                                decorationThickness: 2.0,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-
+                      ),
+                    ),
                   ],
                 )
               ],

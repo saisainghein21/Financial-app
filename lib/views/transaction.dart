@@ -4,22 +4,19 @@ class MyTransaction extends StatelessWidget {
   final String transactionName;
   final String money;
   final String expenseOrIncome;
-  final String dateTime; // Add this line
   final VoidCallback onDelete;
 
-  MyTransaction({
-    super.key,
+  MyTransaction({super.key,
     required this.transactionName,
     required this.money,
     required this.expenseOrIncome,
-    required this.dateTime, // Add this line
     required this.onDelete,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
+      padding: const EdgeInsets.only(bottom: 0.0),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: Container(
@@ -32,6 +29,8 @@ class MyTransaction extends StatelessWidget {
                 children: [
                   Container(
                     padding: const EdgeInsets.all(5),
+                    // decoration: BoxDecoration(
+                    //     shape: BoxShape.circle, color: Colors.grey[500]),
                     child: const Center(
                       child: Icon(
                         Icons.attach_money_outlined,
@@ -42,25 +41,11 @@ class MyTransaction extends StatelessWidget {
                   const SizedBox(
                     width: 10,
                   ),
-                  Column( // Wrap the text in a column to display both name and date/time
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        transactionName,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        dateTime, // Display date and time
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
+                  Text(transactionName,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                      )),
                 ],
               ),
               Row(

@@ -1,7 +1,10 @@
-import 'package:financialapp/auth_login_pages/register_page.dart';
+
 import 'package:flutter/cupertino.dart';
 
-import 'login_page.dart';
+import '../views/login_page.dart';
+import '../views/register_page.dart';
+
+
 
 class LoginOrRegisterPage extends StatefulWidget {
   const LoginOrRegisterPage({super.key});

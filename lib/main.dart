@@ -1,11 +1,11 @@
-import 'package:financialapp/auth_login_pages/home_page.dart';
-import 'package:financialapp/tracker_pages/google_sheet_api.dart';
-import 'package:financialapp/tracker_pages/tracker.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'auth_login_pages/auth_page.dart';
 import 'firebase_options.dart';
 import 'package:dcdg/dcdg.dart';
+
+import 'models/auth_page.dart';
+import 'models/google_sheet_api.dart';
 
 //light cyan
 //Color(0xFF0FF8FF)

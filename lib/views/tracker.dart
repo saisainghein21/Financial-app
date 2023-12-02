@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'package:financialapp/views/plus_button.dart';
+import 'package:financialapp/views/transaction.dart';
 import 'package:flutter/material.dart';
-import 'google_sheet_api.dart';
+
+
+import '../models/google_sheet_api.dart';
 import 'loading_circle.dart';
-import 'plus_button.dart';
 import 'top_card.dart';
-import 'transaction.dart';
 
 class trackerPage extends StatefulWidget {
   const trackerPage({Key? key}) : super(key: key);
@@ -19,24 +21,11 @@ class _trackerPageState extends State<trackerPage> {
   final _textcontrollerITEM = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isIncome = false;
-  GoogleSheetsApi googleSheetsApi = GoogleSheetsApi();
-  List<List<dynamic>> currentTransactions = [];
 
-  @override
-  void initState() {
-    super.initState();
-    _loadTransactions();
-  }
 
-  Future<void> _loadTransactions() async {
-    await googleSheetsApi.init(); // Use the instance to call init
-    setState(() {
-      currentTransactions = GoogleSheetsApi.currentTransactions;
-    });
-  }
-
+  //------------- Dependency on abstraction (GoogleSheetsApi) ---------//
   // enter the new transaction into the spreadsheet
-  void _enterTransaction() async{
+  void _enterTransaction() {
     // Get the current date and time
     DateTime now = DateTime.now();
     String dateTime = now.toString();
@@ -48,8 +37,7 @@ class _trackerPageState extends State<trackerPage> {
       dateTime, // Pass the dateTime to your insert function
     );
 
-    _loadTransactions();
-
+    setState(() {});
   }
 
 
@@ -205,48 +193,41 @@ class _trackerPageState extends State<trackerPage> {
                         child: GoogleSheetsApi.loading == true
                             ? const LoadingCircle()
                             : ListView.builder(
-                            itemCount:
-                            GoogleSheetsApi.currentTransactions.length,
-                            itemBuilder: (context, index) {
-                              return Dismissible(
+                          itemCount:
+                          GoogleSheetsApi.currentTransactions.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 8.0),
+                                child: Dismissible(
                                   key: UniqueKey(),
-                              onDismissed: (direction) {
-                              _deleteTransaction(index);
-                              },
-                              background: Container(
-                              color: Colors.red,
-                              alignment: AlignmentDirectional.centerEnd,
-                              child: const Icon(
-                              Icons.delete,
-                              color: Color(0xFF213A71),
-                              ),
-                              ),
-                                child: MyTransaction(
-                                  transactionName: currentTransactions[index]
-                                      .isNotEmpty
-                                      ? currentTransactions[index][0]
-                                      : 'N/A',
-                                  money: currentTransactions[index]
-                                      .isNotEmpty
-                                      ? currentTransactions[index][1]
-                                      : 'N/A',
-                                  expenseOrIncome: currentTransactions[index]
-                                      .isNotEmpty
-                                      ? currentTransactions[index][2]
-                                      : 'N/A',
-                                  dateTime: currentTransactions[index]
-                                      .length >
-                                      3
-                                      ? currentTransactions[index][3]
-                                      : 'N/A',
-                                  onDelete: () {
+                                  onDismissed: (direction) {
                                     _deleteTransaction(index);
-                                },
+                                  },
+                                  background: Container(
+                                    color: Colors.red,
+                                    alignment: AlignmentDirectional.centerEnd,
+                                    child: const Icon(
+                                      Icons.delete,
+                                      color: Color(0xFF213A71),
+                                    ),
+                                  ),
+                                  child: MyTransaction(
+
+                                    transactionName: GoogleSheetsApi
+                                        .currentTransactions[index][0],
+                                    money: GoogleSheetsApi
+                                        .currentTransactions[index][1],
+                                    expenseOrIncome: GoogleSheetsApi
+                                        .currentTransactions[index][2],
+                                    onDelete: () {
+                                      _deleteTransaction(index); // Call delete function here
+                                    },
+                                  ),
+                                ),
                               ),
-
-
-                              );
-                            },
+                            );
+                          },
                         ),
                       )
                     ],
